@@ -11,7 +11,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Checkout repo
       - uses: actions/checkout@v4
 
       # -------------------
@@ -23,10 +22,10 @@ jobs:
           dotnet-version: 8.0.x
 
       - name: Restore .NET dependencies
-        run: dotnet restore ./dotnet-service/
+        run: dotnet restore OrderService.sln
 
       - name: Build .NET project
-        run: dotnet build ./dotnet-service/ --no-restore --configuration Release
+        run: dotnet build OrderService.sln --no-restore --configuration Release
 
       # -------------------
       # PYTHON BUILD SECTION
@@ -36,10 +35,13 @@ jobs:
         with:
           python-version: '3.10'
 
-      - name: Install Python dependencies
+      - name: Install Python dependencies (if any)
         run: |
-          cd python-service
-          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          if [ -d "python-service" ]; then
+            cd python-service
+            if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+            cd ..
+          fi
 
       # -------------------
       # NODE.JS BUILD SECTION
@@ -49,8 +51,11 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Install and build Node.js project
+      - name: Install and build Node.js project (if any)
         run: |
-          cd node-service
-          npm install
-          npm run build --if-present
+          if [ -d "node-service" ]; then
+            cd node-service
+            npm install
+            npm run build --if-present
+            cd ..
+          fi
