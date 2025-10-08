@@ -22,14 +22,10 @@ jobs:
           dotnet-version: 8.0.x
 
       - name: Restore .NET dependencies
-        run: |
-          cd OrderService
-          dotnet restore OrderService.sln
+        run: dotnet restore OrderService/OrderService.sln
 
       - name: Build .NET project
-        run: |
-          cd OrderService
-          dotnet build OrderService.sln --no-restore --configuration Release
+        run: dotnet build OrderService/OrderService.sln --no-restore --configuration Release
 
       # -------------------
       # PYTHON BUILD SECTION
