@@ -1,0 +1,56 @@
+name: Build Microservices (.NET, Python, Node.js)
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout repo
+      - uses: actions/checkout@v4
+
+      # -------------------
+      # .NET BUILD SECTION
+      # -------------------
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Restore .NET dependencies
+        run: dotnet restore ./dotnet-service/
+
+      - name: Build .NET project
+        run: dotnet build ./dotnet-service/ --no-restore --configuration Release
+
+      # -------------------
+      # PYTHON BUILD SECTION
+      # -------------------
+      - name: Setup Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: '3.10'
+
+      - name: Install Python dependencies
+        run: |
+          cd python-service
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+      # -------------------
+      # NODE.JS BUILD SECTION
+      # -------------------
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install and build Node.js project
+        run: |
+          cd node-service
+          npm install
+          npm run build --if-present
