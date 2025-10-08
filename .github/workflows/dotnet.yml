@@ -22,10 +22,14 @@ jobs:
           dotnet-version: 8.0.x
 
       - name: Restore .NET dependencies
-        run: dotnet restore OrderService.sln
+        run: |
+          cd OrderService
+          dotnet restore OrderService.sln
 
       - name: Build .NET project
-        run: dotnet build OrderService.sln --no-restore --configuration Release
+        run: |
+          cd OrderService
+          dotnet build OrderService.sln --no-restore --configuration Release
 
       # -------------------
       # PYTHON BUILD SECTION
@@ -37,8 +41,8 @@ jobs:
 
       - name: Install Python dependencies (if any)
         run: |
-          if [ -d "python-service" ]; then
-            cd python-service
+          if [ -d "InventoryService" ]; then
+            cd InventoryService
             if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
             cd ..
           fi
@@ -53,8 +57,8 @@ jobs:
 
       - name: Install and build Node.js project (if any)
         run: |
-          if [ -d "node-service" ]; then
-            cd node-service
+          if [ -d "NotificationService" ]; then
+            cd NotificationService
             npm install
             npm run build --if-present
             cd ..
